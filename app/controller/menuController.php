@@ -9,9 +9,7 @@ require_once 'app/view/menuDoctorView.php';
 require_once 'app/view/menuPacienteView.php';
 
 class Menu {
-    private $menuDoctor = new menuDoctorView();
-    private $menuPaciente = new menuPacienteView();
-    private $menuTurnos = new menuTurnosView();
+    private menuDoctor = new MenuDoctor();
     private array $personas = [];
     private array $turnos = [];
     
@@ -27,7 +25,7 @@ class Menu {
             switch ($opcion) {
                 case 1:
                     mostrarMenuDoctor();
-                    $menuDoctor->ejecutar();
+                    menudo()->ejecutar();
                     break;
                 case 2:
                     mostrarMenuPaciente();

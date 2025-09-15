@@ -1,19 +1,22 @@
 <?php
 
-require_once 'app/modelo/paciente.php';
-require_once 'app/modelo/persona.php';
+require_once __DIR__ . '/../db/db.php';
+require_once __DIR__ . '/../view/pacienteView.php';
+require_once __DIR__ . '/../modelo/paciente.php';
 
-class MenuPaciente {
-    private array $personas;
+class PacienteController {
+    private DB $db;
+    private PacienteView $view;
 
-    public function __construct(array $personas) {
-        $this->personas = $personas;
+    public function __construct(DB $db) {
+        $this->db = $db;
+        $this->view = new PacienteView();
     }
 
-    public function ejecutar() {
+    public function menu() {
         while (true) {
-            $this->mostrarMenuPaciente();
-            $opcion = $this->obtenerOpcion();
+            $this->view->mostrarMenuPaciente();
+            $opcion = $this->view->obtenerOpcion();
 
             switch ($opcion) {
                 case 1:
@@ -29,143 +32,68 @@ class MenuPaciente {
                     $this->listarPacientes();
                     break;
                 case 5:
-                    return;
+                    return; // Volver al menú principal
                 default:
-                    echo "\nOpción inválida.\n";
+                    $this->view->mostrarMensaje("Opción inválida.");
             }
         }
     }
 
-    private function obtenerOpcion() {
-        return (int)readline();
-    }
-
     private function agregarPaciente() {
-        echo "\n--- AGREGAR PACIENTE ---\n";
-
-        $apellido = readline("Apellido: ");
-        $nombre = readline("Nombre: ");
-        $telefono = (int)readline("Teléfono: ");
-        $fecha = readline("Fecha de nacimiento (YYYY-MM-DD): ");
-        $obra_social = readline("Obra social: ");
-
+        $datos = $this->view->obtenerDatosPaciente();
         try {
-            $paciente = new Paciente($obra_social, $apellido, $nombre, $telefono, $fecha);
-            $this->personas[] = $paciente;
-            echo "\nPaciente agregado exitosamente!\n";
+            $this->db->agregarPaciente($datos['obra_social'], $datos['apellido'], $datos['nombre'], $datos['telefono'], $datos['fecha']);
+            $this->view->mostrarMensaje("Paciente agregado exitosamente!");
         } catch (Exception $e) {
-            echo "\nError al agregar paciente: " . $e->getMessage() . "\n";
+            $this->view->mostrarMensaje("Error al agregar paciente: " . $e->getMessage());
         }
     }
 
     private function editarPaciente() {
-        if (empty($this->getPacientes())) {
-            echo "\nNo hay pacientes registrados.\n";
+        $pacientes = $this->db->getAllPacientes();
+        if (empty($pacientes)) {
+            $this->view->mostrarMensaje("No hay pacientes registrados.");
             return;
         }
+        $this->view->mostrarListaPacientes($pacientes);
 
-        echo "\n--- EDITAR PACIENTE ---\n";
-        $this->mostrarListaPacientes();
-
-        $id = (int)readline("Seleccione el ID del paciente a editar: ");
-        $paciente = $this->buscarPacientePorId($id);
+        $id = $this->view->obtenerIdPaciente('editar');
+        $paciente = $this->db->getPaciente($id);
 
         if (!$paciente) {
-            echo "\nPaciente no encontrado.\n";
+            $this->view->mostrarMensaje("Paciente no encontrado.");
             return;
         }
 
-        echo "\nDatos actuales:\n";
-        echo $paciente->mostrarInfo();
+        $nuevosDatos = $this->view->obtenerDatosEdicionPaciente($paciente);
 
-        echo "\nNuevos datos (deje vacío para mantener el actual):\n";
-
-        $nuevoApellido = readline("Nuevo apellido: ");
-        if (!empty($nuevoApellido)) {
-            $paciente->setApellido($nuevoApellido);
+        if ($this->db->actualizarPaciente($id, $nuevosDatos)) {
+            $this->view->mostrarMensaje("Paciente editado exitosamente!");
+        } else {
+            $this->view->mostrarMensaje("Error al editar el paciente.");
         }
-
-        $nuevoNombre = readline("Nuevo nombre: ");
-        if (!empty($nuevoNombre)) {
-            $paciente->setNombre($nuevoNombre);
-        }
-
-        $nuevoTelefono = readline("Nuevo teléfono: ");
-        if (!empty($nuevoTelefono)) {
-            $paciente->setTelefono((int)$nuevoTelefono);
-        }
-
-        $nuevaObraSocial = readline("Nueva obra social: ");
-        if (!empty($nuevaObraSocial)) {
-            $paciente->setObra_social($nuevaObraSocial);
-        }
-
-        echo "\nPaciente editado exitosamente!\n";
     }
 
     private function eliminarPaciente() {
-        if (empty($this->getPacientes())) {
-            echo "\nNo hay pacientes registrados.\n";
+        $pacientes = $this->db->getAllPacientes();
+        if (empty($pacientes)) {
+            $this->view->mostrarMensaje("No hay pacientes registrados.");
             return;
         }
+        $this->view->mostrarListaPacientes($pacientes);
 
-        echo "\n--- ELIMINAR PACIENTE ---\n";
-        $this->mostrarListaPacientes();
+        $id = $this->view->obtenerIdPaciente('eliminar');
 
-        $id = (int)readline("Seleccione el ID del paciente a eliminar: ");
-
-        foreach ($this->personas as $i => $persona) {
-            if ($persona instanceof Paciente && $persona->getId() == $id) {
-                echo "\nEliminando paciente: " . $persona->getNombre() . " " . $persona->getApellido() . "\n";
-                unset($this->personas[$i]);
-                $this->personas = array_values($this->personas);
-                echo "Paciente eliminado exitosamente!\n";
-                return;
-            }
+        if ($this->db->eliminarPaciente($id)) {
+            $this->view->mostrarMensaje("Paciente eliminado exitosamente!");
+        } else {
+            $this->view->mostrarMensaje("Paciente no encontrado.");
         }
-
-        echo "\nPaciente no encontrado.\n";
     }
 
     private function listarPacientes() {
-        echo "\n--- LISTA DE PACIENTES ---\n";
-        $this->mostrarListaPacientes();
-    }
-
-    private function buscarPacientePorId($id) {
-        foreach ($this->personas as $persona) {
-            if ($persona instanceof Paciente && $persona->getId() == $id) {
-                return $persona;
-            }
-        }
-        return null;
-    }
-
-    private function getPacientes() {
-        $pacientes = [];
-        foreach ($this->personas as $persona) {
-            if ($persona instanceof Paciente) {
-                $pacientes[] = $persona;
-            }
-        }
-        return $pacientes;
-    }
-
-    private function mostrarMenuPaciente() {
-        echo "\n--- MENÚ PACIENTES ---\n";
-        echo "1. Agregar paciente\n";
-        echo "2. Editar paciente\n";
-        echo "3. Eliminar paciente\n";
-        echo "4. Mostrar pacientes\n";
-        echo "5. Volver al menú principal\n";
-        echo "Seleccione una opción: ";
-    }
-
-    private function mostrarListaPacientes() {
-        foreach ($this->getPacientes() as $paciente) {
-            echo "ID: " . $paciente->getId() . " - " . $paciente->getNombre() . " " . $paciente->getApellido() . " (" . $paciente->getObra_social() . ")\n";
-        }
+        $pacientes = $this->db->getAllPacientes();
+        $this->view->mostrarListaPacientes($pacientes);
     }
 }
-
 ?>

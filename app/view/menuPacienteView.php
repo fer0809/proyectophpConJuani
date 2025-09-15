@@ -1,5 +1,5 @@
 <?php
-    function mostrarMenu() {
+    function mostrarMenuPaciente() {
     echo "\n--- GESTIÓN DE PACIENTES ---\n";
     echo "1. Agregar Paciente\n";
     echo "2. Editar Paciente\n";

@@ -1,6 +1,6 @@
 <?php
-require_once 'paciente.php';
-require_once 'persona.php';
+require_once __DIR__ . '/paciente.php';
+require_once __DIR__ . '/persona.php';
 class Doctor extends Persona{
     private string $especialidad;
     private string $horario;

@@ -1,7 +1,7 @@
 <?php
 
-require_once './modelo/paciente.php';
-require_once './modelo/persona.php';
+require_once 'app/modelo/paciente.php';
+require_once 'app/modelo/persona.php';
 
 class MenuPaciente {
     private array $pacientes = [];
@@ -12,7 +12,7 @@ class MenuPaciente {
     
     public function ejecutar() {
         while (true) {
-            $this->mostrarMenu();
+            $this->mostrarMenuPaciente();
             $opcion = $this->obtenerOpcion();
             
             switch ($opcion) {

@@ -11,7 +11,7 @@ function mostrarDoctores() {
         echo "----------------------------------------\n";
     }
 }
-function mostrarMenu() {
+function mostrarMenuDoctor() {
     echo "\n--- GESTIÓN DE DOCTORES ---\n";
     echo "1. Agregar Doctor\n";
     echo "2. Editar Doctor\n";

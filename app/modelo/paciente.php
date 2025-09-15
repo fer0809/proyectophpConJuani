@@ -1,5 +1,5 @@
 <?php
-require_once 'persona.php';
+require_once __DIR__ . '/persona.php';
 class Paciente extends Persona{
     private string $obra_social;
     private array $doctores;

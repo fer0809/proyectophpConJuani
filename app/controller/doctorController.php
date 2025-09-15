@@ -1,8 +1,8 @@
 <?php
 
-require_once './doctor.php';
-require_once './persona.php';
-require_once './view/menuDoctorView';
+require_once 'app/modelo/doctor.php';
+require_once 'app/modelo/persona.php';
+require_once 'app/view/menuDoctorView.php';
 
 class MenuDoctor {
     private array $doctores = [];
@@ -15,7 +15,7 @@ class MenuDoctor {
     
     public function ejecutar() {
         while (true) {
-            $this->mostrarMenu();
+            $this->mostrarMenuDoctor();
             $opcion = $this->obtenerOpcion();
             
             switch ($opcion) {

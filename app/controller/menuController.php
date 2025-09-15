@@ -1,13 +1,17 @@
 <?php
 
-require_once './modelo/persona.php';
-require_once './modelo/doctor.php';
-require_once './modelo/paciente.php';
-require_once './modelo/turno.php';
-require_once './view/menuDoctorView.php';
-require_once './view/menuPacienteView.php';
+require_once 'app/view/menuPrincipal.php';
+require_once 'app/modelo/persona.php';
+require_once 'app/modelo/doctor.php';
+require_once 'app/modelo/paciente.php';
+require_once 'app/modelo/turno.php';
+require_once 'app/view/menuDoctorView.php';
+require_once 'app/view/menuPacienteView.php';
 
 class Menu {
+    private $menuDoctor = new menuDoctorView();
+    private $menuPaciente = new menuPacienteView();
+    private $menuTurnos = new menuTurnosView();
     private array $personas = [];
     private array $turnos = [];
     
@@ -17,18 +21,19 @@ class Menu {
     
     public function ejecutar() {
         while (true) {
-            $this->mostrarMenuPrincipal();
+            mostrarMenuPrincipal();
             $opcion = $this->obtenerOpcion();
             
             switch ($opcion) {
                 case 1:
-                    $this->menuDoctores();
+                    mostrarMenuDoctor();
+                    $menuDoctor->ejecutar();
                     break;
                 case 2:
-                    $this->menuPacientes();
+                    mostrarMenuPaciente();
                     break;
                 case 3:
-                    $this->menuTurnos();
+                    mostrarMenuTurnos();
                     break;
                 case 4:
                     echo "\n¡Gracias por usar la aplicación!\n";

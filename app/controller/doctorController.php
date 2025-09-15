@@ -2,22 +2,19 @@
 
 require_once 'app/modelo/doctor.php';
 require_once 'app/modelo/persona.php';
-require_once 'app/view/menuDoctorView.php';
 
 class MenuDoctor {
-    private array $doctores = [];
-    
-    public function __construct() {
-        $this->cargarDoctores();
+    private array $personas;
+
+    public function __construct(array $personas) {
+        $this->personas = $personas;
     }
 
-
-    
     public function ejecutar() {
         while (true) {
             $this->mostrarMenuDoctor();
             $opcion = $this->obtenerOpcion();
-            
+
             switch ($opcion) {
                 case 1:
                     $this->agregarDoctor();
@@ -29,7 +26,7 @@ class MenuDoctor {
                     $this->eliminarDoctor();
                     break;
                 case 4:
-                    $this->mostrarDoctores();
+                    $this->listarDoctores();
                     break;
                 case 5:
                     return;
@@ -38,120 +35,141 @@ class MenuDoctor {
             }
         }
     }
-    
-    
+
     private function obtenerOpcion() {
         return (int)readline();
     }
-    
+
     private function agregarDoctor() {
         echo "\n--- AGREGAR DOCTOR ---\n";
-        
+
         $apellido = readline("Apellido: ");
         $nombre = readline("Nombre: ");
         $telefono = (int)readline("Teléfono: ");
         $fecha = readline("Fecha de nacimiento (YYYY-MM-DD): ");
         $especialidad = readline("Especialidad: ");
         $horario = readline("Horario: ");
-        
+
         try {
             $doctor = new Doctor($apellido, $nombre, $telefono, $fecha, $especialidad, $horario);
-            $this->doctores[] = $doctor;
+            $this->personas[] = $doctor;
             echo "\nDoctor agregado exitosamente!\n";
         } catch (Exception $e) {
             echo "\nError al agregar doctor: " . $e->getMessage() . "\n";
         }
     }
-    
+
     private function editarDoctor() {
-        if (empty($this->doctores)) {
+        if (empty($this->getDoctores())) {
             echo "\nNo hay doctores registrados.\n";
             return;
         }
-        
+
         echo "\n--- EDITAR DOCTOR ---\n";
         $this->mostrarListaDoctores();
-        
+
         $id = (int)readline("Seleccione el ID del doctor a editar: ");
         $doctor = $this->buscarDoctorPorId($id);
-        
+
         if (!$doctor) {
             echo "\nDoctor no encontrado.\n";
             return;
         }
-        
+
         echo "\nDatos actuales:\n";
         echo $doctor->mostrarInfo();
-        
+
         echo "\nNuevos datos (deje vacío para mantener el actual):\n";
-        
+
         $nuevoApellido = readline("Nuevo apellido: ");
         if (!empty($nuevoApellido)) {
             $doctor->setApellido($nuevoApellido);
         }
-        
+
         $nuevoNombre = readline("Nuevo nombre: ");
         if (!empty($nuevoNombre)) {
             $doctor->setNombre($nuevoNombre);
         }
-        
+
         $nuevoTelefono = readline("Nuevo teléfono: ");
         if (!empty($nuevoTelefono)) {
             $doctor->setTelefono((int)$nuevoTelefono);
         }
-        
+
         $nuevaEspecialidad = readline("Nueva especialidad: ");
         if (!empty($nuevaEspecialidad)) {
             $doctor->setEspecialidad($nuevaEspecialidad);
         }
-        
+
         $nuevoHorario = readline("Nuevo horario: ");
         if (!empty($nuevoHorario)) {
             $doctor->setHorario($nuevoHorario);
         }
-        
+
         echo "\nDoctor editado exitosamente!\n";
     }
-    
+
     private function eliminarDoctor() {
-        if (empty($this->doctores)) {
+        if (empty($this->getDoctores())) {
             echo "\nNo hay doctores registrados.\n";
             return;
         }
-        
+
         echo "\n--- ELIMINAR DOCTOR ---\n";
         $this->mostrarListaDoctores();
-        
+
         $id = (int)readline("Seleccione el ID del doctor a eliminar: ");
-        
-        for ($i = 0; $i < count($this->doctores); $i++) {
-            if ($this->doctores[$i]->getId() == $id) {
-                echo "\nEliminando doctor: " . $this->doctores[$i]->getNombre() . " " . $this->doctores[$i]->getApellido() . "\n";
-                unset($this->doctores[$i]);
-                $this->doctores = array_values($this->doctores);
+
+        foreach ($this->personas as $i => $persona) {
+            if ($persona instanceof Doctor && $persona->getId() == $id) {
+                echo "\nEliminando doctor: " . $persona->getNombre() . " " . $persona->getApellido() . "\n";
+                unset($this->personas[$i]);
+                $this->personas = array_values($this->personas);
                 echo "Doctor eliminado exitosamente!\n";
                 return;
             }
         }
-        
+
         echo "\nDoctor no encontrado.\n";
     }
-    
-   
+
+    private function listarDoctores() {
+        echo "\n--- LISTA DE DOCTORES ---\n";
+        $this->mostrarListaDoctores();
+    }
 
     private function buscarDoctorPorId($id) {
-        foreach ($this->doctores as $doctor) {
-            if ($doctor->getId() == $id) {
-                return $doctor;
+        foreach ($this->personas as $persona) {
+            if ($persona instanceof Doctor && $persona->getId() == $id) {
+                return $persona;
             }
         }
         return null;
     }
-    
-    private function cargarDoctores() {
-        if (empty($this->doctores)) {
-            $this->doctores[] = new Doctor("García", "María", 123456789, "1980-05-15", "Cardiología", "Lunes a Viernes 8-16hs");
-            $this->doctores[] = new Doctor("López", "Carlos", 987654321, "1975-03-20", "Dermatología", "Martes a Sábado 9-17hs");
+
+    private function getDoctores() {
+        $doctores = [];
+        foreach ($this->personas as $persona) {
+            if ($persona instanceof Doctor) {
+                $doctores[] = $persona;
+            }
+        }
+        return $doctores;
+    }
+
+    private function mostrarMenuDoctor() {
+        echo "\n--- MENÚ DOCTORES ---\n";
+        echo "1. Agregar doctor\n";
+        echo "2. Editar doctor\n";
+        echo "3. Eliminar doctor\n";
+        echo "4. Mostrar doctores\n";
+        echo "5. Volver al menú principal\n";
+        echo "Seleccione una opción: ";
+    }
+
+    private function mostrarListaDoctores() {
+        foreach ($this->getDoctores() as $doctor) {
+            echo "ID: " . $doctor->getId() . " - " . $doctor->getNombre() . " " . $doctor->getApellido() . " (" . $doctor->getEspecialidad() . ")\n";
         }
     }
 }

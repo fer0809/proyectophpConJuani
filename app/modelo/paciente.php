@@ -1,5 +1,5 @@
 <?php
-require_once './Persona.php';
+require_once 'persona.php';
 class Paciente extends Persona{
     private string $obra_social;
     private array $doctores;
@@ -38,4 +38,3 @@ public function mostrarInfo(): string {
            "Doctores (IDs): " . implode(", ", $this->getDoctores()) . "\n";
 }
 }
-

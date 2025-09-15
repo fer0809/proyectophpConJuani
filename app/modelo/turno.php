@@ -1,5 +1,9 @@
 <?php
+require_once './persona.php';
+require_once './paciente.php';
+
 class Turno{
+
     private string $fecha;
     private int $id_doctor;
     private int $id_paciente;

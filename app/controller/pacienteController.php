@@ -1,7 +1,7 @@
 <?php
 
-require_once './Paciente.php';
-require_once './Persona.php';
+require_once './modelo/paciente.php';
+require_once './modelo/persona.php';
 
 class MenuPaciente {
     private array $pacientes = [];
@@ -36,15 +36,6 @@ class MenuPaciente {
         }
     }
     
-    private function mostrarMenu() {
-        echo "\n--- GESTIÓN DE PACIENTES ---\n";
-        echo "1. Agregar Paciente\n";
-        echo "2. Editar Paciente\n";
-        echo "3. Eliminar Paciente\n";
-        echo "4. Ver todos los pacientes\n";
-        echo "5. Volver al menú principal\n";
-        echo "Seleccione una opción: ";
-    }
     
     private function obtenerOpcion() {
         return (int)readline();
@@ -136,26 +127,7 @@ class MenuPaciente {
         
         echo "\nPaciente no encontrado.\n";
     }
-    
-    private function mostrarPacientes() {
-        if (empty($this->pacientes)) {
-            echo "\nNo hay pacientes registrados.\n";
-            return;
-        }
-        
-        echo "\n--- LISTADO DE PACIENTES ---\n";
-        foreach ($this->pacientes as $paciente) {
-            echo $paciente->mostrarInfo();
-            echo "----------------------------------------\n";
-        }
-    }
-    
-    private function mostrarListaPacientes() {
-        foreach ($this->pacientes as $paciente) {
-            echo "ID: " . $paciente->getId() . " - " . $paciente->getNombre() . " " . $paciente->getApellido() . " (" . $paciente->getObra_social() . ")\n";
-        }
-    }
-    
+   
     private function buscarPacientePorId($id) {
         foreach ($this->pacientes as $paciente) {
             if ($paciente->getId() == $id) {

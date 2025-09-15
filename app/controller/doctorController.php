@@ -1,7 +1,8 @@
 <?php
 
-require_once './Doctor.php';
-require_once './Persona.php';
+require_once './doctor.php';
+require_once './persona.php';
+require_once './view/menuDoctorView';
 
 class MenuDoctor {
     private array $doctores = [];
@@ -9,6 +10,8 @@ class MenuDoctor {
     public function __construct() {
         $this->cargarDoctores();
     }
+
+
     
     public function ejecutar() {
         while (true) {
@@ -36,15 +39,6 @@ class MenuDoctor {
         }
     }
     
-    private function mostrarMenu() {
-        echo "\n--- GESTIÓN DE DOCTORES ---\n";
-        echo "1. Agregar Doctor\n";
-        echo "2. Editar Doctor\n";
-        echo "3. Eliminar Doctor\n";
-        echo "4. Ver todos los doctores\n";
-        echo "5. Volver al menú principal\n";
-        echo "Seleccione una opción: ";
-    }
     
     private function obtenerOpcion() {
         return (int)readline();
@@ -143,25 +137,8 @@ class MenuDoctor {
         echo "\nDoctor no encontrado.\n";
     }
     
-    private function mostrarDoctores() {
-        if (empty($this->doctores)) {
-            echo "\nNo hay doctores registrados.\n";
-            return;
-        }
-        
-        echo "\n--- LISTADO DE DOCTORES ---\n";
-        foreach ($this->doctores as $doctor) {
-            echo $doctor->mostrarInfo();
-            echo "----------------------------------------\n";
-        }
-    }
-    
-    private function mostrarListaDoctores() {
-        foreach ($this->doctores as $doctor) {
-            echo "ID: " . $doctor->getId() . " - " . $doctor->getNombre() . " " . $doctor->getApellido() . " (" . $doctor->getEspecialidad() . ")\n";
-        }
-    }
-    
+   
+
     private function buscarDoctorPorId($id) {
         foreach ($this->doctores as $doctor) {
             if ($doctor->getId() == $id) {

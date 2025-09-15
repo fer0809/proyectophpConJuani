@@ -1,5 +1,6 @@
 <?php
-require_once './Persona.php';
+require_once 'paciente.php';
+require_once 'persona.php';
 class Doctor extends Persona{
     private string $especialidad;
     private string $horario;
@@ -48,6 +49,3 @@ class Doctor extends Persona{
     }
 }
 ?>
-
-
-                     

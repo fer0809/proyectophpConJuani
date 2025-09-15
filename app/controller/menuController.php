@@ -1,11 +1,11 @@
 <?php
 
-require_once './Persona.php';
-require_once './Doctor.php';
-require_once './Paciente.php';
-require_once './Turno.php';
-require_once './menuDoctor.php';
-require_once './menuPaciente.php';
+require_once './modelo/persona.php';
+require_once './modelo/doctor.php';
+require_once './modelo/paciente.php';
+require_once './modelo/turno.php';
+require_once './view/menuDoctorView.php';
+require_once './view/menuPacienteView.php';
 
 class Menu {
     private array $personas = [];
@@ -37,18 +37,6 @@ class Menu {
                     echo "\nOpción inválida. Intente nuevamente.\n";
             }
         }
-    }
-    
-    private function mostrarMenuPrincipal() {
-        echo "\n==========================================\n";
-        echo "SISTEMA DE GESTIÓN MÉDICA\n";
-        echo "==========================================\n";
-        echo "1. Gestión de Doctores\n";
-        echo "2. Gestión de Pacientes\n";
-        echo "3. Gestión de Turnos\n";
-        echo "4. Salir\n";
-        echo "==========================================\n";
-        echo "Seleccione una opción: ";
     }
     
     private function obtenerOpcion() {
@@ -89,16 +77,6 @@ class Menu {
                     echo "\nOpción inválida.\n";
             }
         }
-    }
-    
-    private function mostrarMenuTurnos() {
-        echo "\n--- GESTIÓN DE TURNOS ---\n";
-        echo "1. Crear Turno\n";
-        echo "2. Modificar Turno\n";
-        echo "3. Cancelar Turno\n";
-        echo "4. Ver todos los turnos\n";
-        echo "5. Volver al menú principal\n";
-        echo "Seleccione una opción: ";
     }
     
     private function crearTurno() {
@@ -291,4 +269,3 @@ class Menu {
 }
 
 ?>
-

@@ -4,15 +4,26 @@ require_once __DIR__ . '/../modelo/paciente.php';
 require_once __DIR__ . '/../modelo/turno.php';
 
 class DB {
+    private static ?DB $instance = null;
     private array $doctores;
     private array $pacientes;
     private array $turnos;
 
-    public function __construct() {
+    private function __construct() {
         $this->doctores = [];
         $this->pacientes = [];
         $this->turnos = [];
     }
+
+    public static function getInstance(): DB {
+        if (self::$instance === null) {
+            self::$instance = new self();
+        }
+        return self::$instance;
+    }
+
+    private function __clone() {}
+    public function __wakeup() {}
 
     // Métodos para Doctores
     public function agregarDoctor(string $apellido, string $nombre, int $telefono, string $fecha_de_nacimiento, string $especialidad, string $horario): Doctor {

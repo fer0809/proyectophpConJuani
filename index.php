@@ -4,7 +4,7 @@ require_once __DIR__ . '/app/db/db.php';
 require_once __DIR__ . '/app/controller/menuController.php';
 
 // 1. Inicializar la base de datos en memoria
-$db = new DB();
+$db = DB::getInstance();
 
 // 2. Cargar datos iniciales (seeding)
 function seedData(DB $db) {

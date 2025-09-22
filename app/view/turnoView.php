@@ -51,29 +51,20 @@ class TurnoView {
         return $datos;
     }
 
-    public function mostrarTurnos(array $turnos, DB $db) {
+    public function mostrarTurnos(array $turnosData) {
         echo "\n--- LISTADO DE TURNOS ---\n";
-        if (empty($turnos)) {
+        if (empty($turnosData)) {
             echo "No hay turnos registrados.\n";
             return;
         }
 
-        foreach ($turnos as $turno) {
-            $doctor = $db->getDoctor($turno->getId_doctor());
-            $paciente = $db->getPaciente($turno->getId_paciente());
-
-            echo "Turno ID: " . $turno->getId() . "\n";
-            echo "Fecha: " . $turno->getFecha() . "\n";
-            echo "Hora: " . $turno->getHora() . "\n";
-            echo "Estado: " . ($turno->getEstado() ? "Activo" : "Cancelado") . "\n";
-
-            if ($doctor) {
-                echo "Doctor: " . $doctor->getNombre() . " " . $doctor->getApellido() . "\n";
-            }
-
-            if ($paciente) {
-                echo "Paciente: " . $paciente->getNombre() . " " . $paciente->getApellido() . "\n";
-            }
+        foreach ($turnosData as $data) {
+            echo "Turno ID: " . $data['id'] . "\n";
+            echo "Fecha: " . $data['fecha'] . "\n";
+            echo "Hora: " . $data['hora'] . "\n";
+            echo "Estado: " . $data['estado'] . "\n";
+            echo "Doctor: " . $data['doctor'] . "\n";
+            echo "Paciente: " . $data['paciente'] . "\n";
             echo "----------------------------------------\n";
         }
     }

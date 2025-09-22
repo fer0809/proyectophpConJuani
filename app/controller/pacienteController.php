@@ -1,15 +1,15 @@
 <?php
 
-require_once __DIR__ . '/../db/db.php';
 require_once __DIR__ . '/../view/pacienteView.php';
+require_once __DIR__ . '/../modelo/pacienteModelo.php';
 require_once __DIR__ . '/../modelo/paciente.php';
 
 class PacienteController {
-    private DB $db;
+    private PacienteModelo $modelo;
     private PacienteView $view;
 
-    public function __construct(DB $db) {
-        $this->db = $db;
+    public function __construct() {
+        $this->modelo = new PacienteModelo();
         $this->view = new PacienteView();
     }
 
@@ -42,7 +42,7 @@ class PacienteController {
     private function agregarPaciente() {
         $datos = $this->view->obtenerDatosPaciente();
         try {
-            $this->db->agregarPaciente($datos['obra_social'], $datos['apellido'], $datos['nombre'], $datos['telefono'], $datos['fecha']);
+            $this->modelo->agregarPaciente($datos['obra_social'], $datos['apellido'], $datos['nombre'], $datos['telefono'], $datos['fecha']);
             $this->view->mostrarMensaje("Paciente agregado exitosamente!");
         } catch (Exception $e) {
             $this->view->mostrarMensaje("Error al agregar paciente: " . $e->getMessage());
@@ -50,7 +50,7 @@ class PacienteController {
     }
 
     private function editarPaciente() {
-        $pacientes = $this->db->getAllPacientes();
+        $pacientes = $this->modelo->obtenerTodosLosPacientes();
         if (empty($pacientes)) {
             $this->view->mostrarMensaje("No hay pacientes registrados.");
             return;
@@ -58,7 +58,7 @@ class PacienteController {
         $this->view->mostrarListaPacientes($pacientes);
 
         $id = $this->view->obtenerIdPaciente('editar');
-        $paciente = $this->db->getPaciente($id);
+        $paciente = $this->modelo->obtenerPacientePorId($id);
 
         if (!$paciente) {
             $this->view->mostrarMensaje("Paciente no encontrado.");
@@ -67,7 +67,7 @@ class PacienteController {
 
         $nuevosDatos = $this->view->obtenerDatosEdicionPaciente($paciente);
 
-        if ($this->db->actualizarPaciente($id, $nuevosDatos)) {
+        if ($this->modelo->actualizarPaciente($id, $nuevosDatos)) {
             $this->view->mostrarMensaje("Paciente editado exitosamente!");
         } else {
             $this->view->mostrarMensaje("Error al editar el paciente.");
@@ -75,7 +75,7 @@ class PacienteController {
     }
 
     private function eliminarPaciente() {
-        $pacientes = $this->db->getAllPacientes();
+        $pacientes = $this->modelo->obtenerTodosLosPacientes();
         if (empty($pacientes)) {
             $this->view->mostrarMensaje("No hay pacientes registrados.");
             return;
@@ -84,7 +84,7 @@ class PacienteController {
 
         $id = $this->view->obtenerIdPaciente('eliminar');
 
-        if ($this->db->eliminarPaciente($id)) {
+        if ($this->modelo->eliminarPaciente($id)) {
             $this->view->mostrarMensaje("Paciente eliminado exitosamente!");
         } else {
             $this->view->mostrarMensaje("Paciente no encontrado.");
@@ -92,7 +92,7 @@ class PacienteController {
     }
 
     private function listarPacientes() {
-        $pacientes = $this->db->getAllPacientes();
+        $pacientes = $this->modelo->obtenerTodosLosPacientes();
         $this->view->mostrarListaPacientes($pacientes);
     }
 }

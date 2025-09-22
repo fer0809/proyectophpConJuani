@@ -24,6 +24,10 @@ class TurnoModelo{
         return $this->db->actualizarTurno($id, $datos);
     }
 
+    public function cancelarTurno(int $id) {
+        return $this->db->cancelarTurno($id);
+    }
+
     public function eliminarTurno(int $id) {
         return $this->db->eliminarTurno($id);
     }

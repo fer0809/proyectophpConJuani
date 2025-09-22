@@ -1,24 +1,21 @@
 <?php
 
-require_once __DIR__ . '/../db/db.php';
 require_once __DIR__ . '/../view/mainView.php';
 require_once __DIR__ . '/doctorController.php';
 require_once __DIR__ . '/pacienteController.php';
 require_once __DIR__ . '/turnoController.php';
 
 class MenuController {
-    private DB $db;
     private MainView $view;
     private DoctorController $doctorController;
     private PacienteController $pacienteController;
     private TurnoController $turnoController;
 
-    public function __construct(DB $db) {
-        $this->db = $db;
+    public function __construct() {
         $this->view = new MainView();
-        $this->doctorController = new DoctorController($this->db);
-        $this->pacienteController = new PacienteController($this->db);
-        $this->turnoController = new TurnoController($this->db);
+        $this->doctorController = new DoctorController();
+        $this->pacienteController = new PacienteController();
+        $this->turnoController = new TurnoController();
     }
 
     public function ejecutar() {

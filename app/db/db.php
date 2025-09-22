@@ -150,8 +150,13 @@ class DB {
         return true;
     }
 
-    public function cancelarTurnoDb(int $id): bool {
-        return $this->eliminarTurno($id);
+    public function cancelarTurno(int $id): bool {
+        $turno = $this->getTurno($id);
+        if ($turno) {
+            $turno->setEstado(false);
+            return true;
+        }
+        return false;
     }
 
     public function eliminarTurno(int $id): bool {
